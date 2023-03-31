@@ -11,6 +11,12 @@ const expenseStore = (set) => ({
 			expenseTotal: state.expenseTotal + expense.expAmount,
 		}));
 	},
+	removeExpense: (expenseID, expenseAmount) => {
+		set((state) => ({
+			expenseTotal: state.expenseTotal - expenseAmount,
+			expenses: state.expenses.filter((expense) => expense.id !== expenseID),
+		}));
+	},
 });
 
 const useExpenseStore = create(
