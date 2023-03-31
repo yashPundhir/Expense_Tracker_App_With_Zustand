@@ -5,6 +5,8 @@ import useExpenseStore from "../app/expenseStore";
 const ExpenseList = () => {
 	const expenses = useExpenseStore((state) => state.expenses);
 
+	const removeExpense = useExpenseStore((state) => state.removeExpense);
+
 	const individualExpense = expenses.map((expense, i) => (
 		<React.Fragment key={i}>
 			<li className="border-[1.5px] border-green-400 px-8 py-4 text-center rounded-2xl flex flex-row justify-between items-center gap-5">
@@ -15,13 +17,21 @@ const ExpenseList = () => {
 				<span className="py-1.5 border-[1.5px] border-pink-400 px-3 rounded-xl">
 					{expense.expAmount}
 				</span>
+				<button
+					onClick={() => {
+						removeExpense(expense.id, expense.expAmount);
+					}}
+					className="border-[1.5px] text-[14px] py-1.5 px-3.5 rounded-lg"
+				>
+					Delete
+				</button>
 			</li>
 		</React.Fragment>
 	));
 
 	return (
 		<div className="my-5">
-			<ul className="flex flex-col items-center justify-center gap-5 text-[20px] font-medium border-[1.5px] border-indigo-500 py-7 w-[450px] h-auto rounded-3xl">
+			<ul className="flex flex-col items-center justify-center gap-5 text-[20px] font-medium border-[1.5px] border-indigo-500 py-7 w-auto min-w-[450px] px-10 h-auto rounded-3xl">
 				{individualExpense}
 			</ul>
 		</div>
