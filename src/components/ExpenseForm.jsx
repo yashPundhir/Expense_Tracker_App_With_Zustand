@@ -19,6 +19,7 @@ const ExpenseForm = () => {
 			id: Math.ceil(Math.random() * 1000000),
 			expName: expenseName,
 			expAmount: expenseAmount,
+			oldAmount: 0,
 		});
 		setExpenseName("");
 		setExpenseAmount("");
