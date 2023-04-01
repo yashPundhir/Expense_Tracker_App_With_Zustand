@@ -13,6 +13,11 @@
 	color-scheme: dark;
 }
 
+:portal {
+	color-scheme: dark;
+	background-color: transparent;
+}
+
 /* :root {
 	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
