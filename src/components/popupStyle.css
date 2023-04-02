@@ -1,0 +1,20 @@
+.swal2-popup {
+	margin-top: 10px;
+	margin-right: 10px;
+	border: 3px solid rgb(156 163 175) !important;
+	border-radius: 25px !important;
+}
+
+/* .swal-overlay {
+	background-color: rgba(0, 0, 0, 1) !important;
+} */
+
+.swal2-confirm {
+	border-radius: 10px !important;
+}
+
+.swal2-cancel {
+	margin-right: 20px !important;
+	background-color: rgb(185 28 28) !important;
+	border-radius: 10px !important;
+}
