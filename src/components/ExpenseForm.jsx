@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+import Swal from "sweetalert2/dist/sweetalert2";
+import "./popupStyle.css";
+
 import useExpenseStore from "../app/expenseStore";
 
 const ExpenseForm = () => {
@@ -13,8 +16,40 @@ const ExpenseForm = () => {
 		if (!expenseName || !expenseAmount) {
 			setExpenseName("");
 			setExpenseAmount("");
-			return alert("please add all the required fields");
+			//return alert("please add all the required fields");
+			return Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "Please fill all the Required Fields!",
+				showCloseButton: true,
+				backdrop: `
+				rgba(0,0,0,0.85)
+				left top
+				no-repeat
+				`,
+				allowOutsideClick: false,
+				backdropOpacity: "0.9",
+			});
 		}
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			iconColor: "rgb(34 197 94)",
+			showCloseButton: true,
+			timer: 6000,
+			//allowOutsideClick: false,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.addEventListener("mouseenter", Swal.stopTimer);
+				toast.addEventListener("mouseleave", Swal.resumeTimer);
+			},
+		});
+
+		Toast.fire({
+			icon: "success",
+			title: "Details Added Successfully",
+		});
 		addExpense({
 			id: Math.ceil(Math.random() * 1000000),
 			expName: expenseName,
@@ -42,8 +77,9 @@ const ExpenseForm = () => {
 					className="w-60 p-3 border-[1.5px] border-pink-400 rounded-xl text-center focus:outline-none bg-transparent"
 					type="number"
 					value={expenseAmount}
+					min="0"
 					onChange={(event) => {
-						setExpenseAmount(Number(event.target.value));
+						setExpenseAmount(Math.abs(Number(event.target.value)));
 					}}
 					placeholder="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expense Amount"
 					required

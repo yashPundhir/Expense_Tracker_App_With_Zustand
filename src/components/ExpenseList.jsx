@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+import Swal from "sweetalert2/dist/sweetalert2";
+import "./popupStyle.css";
+
 import ExpenseUpdateModal from "./ExpenseUpdateModal";
 
 import useExpenseStore from "../app/expenseStore";
@@ -21,12 +24,46 @@ const ExpenseList = () => {
 
 	const updateExpense = useExpenseStore((state) => state.updateExpense);
 
+	const swalWithBootstrapButtons = Swal.mixin({
+		buttonsStyling: true,
+	});
+
 	const handleUpdateExpenseSubmit = (id, name, amount, oldAmount) => {
 		if (!updateExpenseName || !updateExpenseAmount) {
-			setUpdateExpenseName("");
-			setUpdateExpenseAmount("");
-			return alert("please add all the required fields");
+			//return alert("please add all the required fields");
+			return Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "Please fill all the Required Fields!",
+				showCloseButton: true,
+				backdrop: `
+				rgba(0,0,0,0.85)
+				left top
+				no-repeat
+				`,
+				allowOutsideClick: false,
+				backdropOpacity: "0.9",
+			});
 		}
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			iconColor: "rgb(34 197 94)",
+			showCloseButton: true,
+			timer: 6000,
+			//allowOutsideClick: false,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.addEventListener("mouseenter", Swal.stopTimer);
+				toast.addEventListener("mouseleave", Swal.resumeTimer);
+			},
+		});
+
+		Toast.fire({
+			icon: "success",
+			title: "Details Updated Successfully",
+		});
 		updateExpense(id, name, amount, oldAmount);
 		setUpdateExpenseName("");
 		setUpdateExpenseAmount("");
@@ -77,8 +114,9 @@ const ExpenseList = () => {
 								className="w-60 p-3 border-[1.5px] border-pink-400 rounded-xl text-center focus:outline-none bg-transparent"
 								type="number"
 								value={updateExpenseAmount}
+								min="0"
 								onChange={(event) => {
-									setUpdateExpenseAmount(Number(event.target.value));
+									setUpdateExpenseAmount(Math.abs(Number(event.target.value)));
 								}}
 								placeholder="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Expense Amount"
 								required
@@ -108,7 +146,76 @@ const ExpenseList = () => {
 
 				<button
 					onClick={() => {
-						removeExpense(expense.id, expense.expAmount);
+						swalWithBootstrapButtons
+							.fire({
+								title: "Are you sure?",
+								text: "You won't be able to revert this!",
+								icon: "warning",
+								iconColor: "rgb(249 115 22)",
+								showCancelButton: true,
+								confirmButtonText: "Yes, delete it!",
+								cancelButtonText: "No, cancel!",
+								reverseButtons: true,
+								allowOutsideClick: false,
+								backdrop: `
+									rgba(0,0,0,0.85)
+									left top
+									no-repeat
+								`,
+								backdropOpacity: "0.9",
+							})
+							.then((result) => {
+								if (result.isConfirmed) {
+									swalWithBootstrapButtons.fire(
+										// "Deleted!",
+										// "Your file has been deleted.",
+										// "success"
+										{
+											title: "Deleted!",
+											text: "Your details has been deleted.",
+											icon: "success",
+											iconColor: "rgb(34 197 94)",
+											showCloseButton: true,
+											timer: 6000,
+											timerProgressBar: false,
+											allowOutsideClick: false,
+											backdrop: `
+													rgba(0,0,0,0.85)
+													left top
+													no-repeat
+												`,
+											backdropOpacity: "0.9",
+										}
+									);
+									removeExpense(expense.id, expense.expAmount);
+								} else if (
+									/* Read more about handling dismissals below */
+									result.dismiss === Swal.DismissReason.cancel
+								) {
+									swalWithBootstrapButtons.fire(
+										// "Cancelled",
+										// "Your imaginary file is safe :)",
+										// "error"
+										{
+											title: "Cancelled",
+											text: "Your details are safe :)",
+											icon: "error",
+											iconColor: "rgb(220 38 38)",
+											showCloseButton: true,
+											timer: 6000,
+											timerProgressBar: false,
+											allowOutsideClick: false,
+											backdrop: `
+													rgba(0,0,0,0.85)
+													left top
+													no-repeat
+												`,
+											backdropOpacity: "0.9",
+										}
+									);
+								}
+							});
+						//removeExpense(expense.id, expense.expAmount);
 					}}
 					className="border-[1.5px] border-red-500 text-[14px] py-1.5 px-3.5 rounded-lg"
 				>
